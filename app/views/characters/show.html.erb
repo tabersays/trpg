@@ -1,0 +1,464 @@
+<%- model_class = Character -%>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.3/angular.js"></script>
+<div ng-controller='MyController as app'>
+<div class="page-header">
+  <h1><%= t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
+<div>
+  <br>
+  <%= image_tag root_url + "/images/" + @character.image, size: "100x100", alt: @character.image %>
+  <br>
+
+  <dl class="dl-horizontal">
+    <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
+    <dd><%= @character.name %></dd>
+    <dt><strong><%= model_class.human_attribute_name(:hp) %>:</strong></dt>
+    <dd>{{char.hp}}</dd>
+    <dt><strong><%= model_class.human_attribute_name(:mp) %>:</strong></dt>
+    <dd>{{char.mp}}</dd>
+    <dt><strong><%= model_class.human_attribute_name(:ep) %>:</strong></dt>
+    <dd>{{char.ep}}</dd>
+  </dl>
+
+  <br>
+
+  <div ng-if="battleDone">
+    <button ng-click="easyBattle()">An easy battle!</button>
+    <button ng-click="medBattle()">An medium battle!</button>
+    <button ng-click="hardBattle()">An hard battle!</button>
+    <button ng-click="rest()">Rest</button>
+  </div>
+  <div>
+    <p>{{dialog}}</p>
+
+    <div ng-hide="battleDone">
+      <p>{{yBattle}}</p>
+
+      <p>{{mBattle}}</p>
+
+      <p>Your enemy has {{enemyHp}} HP left!</p>
+      <button class="btn btn-success" ng-click="attackWep()">Attack in melee</button>
+      <button class="btn btn-primary" ng-click="attackMag()">Attack with magic</button>
+      <button class="btn btn-danger" ng-click="retreat()">Retreat</button>
+    </div>
+
+  </div>
+  <strong>Show Character's Stats: </strong><input type="checkbox" ng-model="statsCheck"/>
+
+  <br>
+
+  <div ng-if="statsCheck">
+    <dl class="dl-horizontal">
+      <dt><strong><%= model_class.human_attribute_name(:str) %>:</strong></dt>
+      <dd><%= @character.str %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:dex) %>:</strong></dt>
+      <dd><%= @character.dex %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:spd) %>:</strong></dt>
+      <dd><%= @character.spd %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:con) %>:</strong></dt>
+      <dd><%= @character.con %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:end) %>:</strong></dt>
+      <dd><%= @character.end %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:min) %>:</strong></dt>
+      <dd><%= @character.min %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:sol) %>:</strong></dt>
+      <dd><%= @character.sol %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:lv) %>:</strong></dt>
+      <dd><%= @character.lv %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:exp) %>:</strong></dt>
+      <dd><%= @character.exp %></dd>
+    </dl>
+  </div>
+  <div>
+    <br>
+    <strong>Show Item Collection: </strong><input type="checkbox" ng-model="itemCheck"/>
+
+    <div ng-if="itemCheck">
+      <strong><p>Items: </p></strong>
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Att</th>
+          <th>Def</th>
+          <th>Worth</th>
+          <th colspan="3"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% @character.items.each do |item| %>
+            <tr>
+              <td><%= item.name %></td>
+              <td><%= item.kind %></td>
+              <td><%= item.att %></td>
+              <td><%= item.def %></td>
+              <td><%= item.worth %></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <br>
+</div>
+
+<script>
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+</script>
+
+<script>
+
+    var app = angular.module('MyApp', []);
+    app.controller('MyController', ['$scope', function ($scope) {
+        $scope.but = function () {
+            //alert($scope.anything);
+            //$scope.anything = "morestuff";
+        };
+        $scope.easyBattle = function () {
+            //alert();
+            $scope.dialog = "You approach a wolf, this should be an easy prey.";
+            $scope.battleDone = false;
+            monster = $scope.enemy.wolf;
+            $scope.enemyHp = monster.hp;
+            battleType = "easy";
+            //$scope.char.hp -= 5;
+        };
+        $scope.medBattle = function () {
+            $scope.dialog = "An Orc, this might provide a challenge.";
+            $scope.battleDone = false;
+            monster = $scope.enemy.orc;
+            $scope.enemyHp = monster.hp;
+            battleType = "med";
+        };
+        $scope.hardBattle = function () {
+            $scope.dialog = "Beware a mighty dragon approaches";
+            $scope.battleDone = false;
+            monster = $scope.enemy.dragon;
+            $scope.enemyHp = monster.hp;
+            battleType = "hard";
+        };
+
+        $scope.store = function () {
+            alert("This is the store.");
+        };
+        $scope.rest = function () {
+            //alert("After a good rest you are restored");
+            $scope.dialog = $scope.inn[randInn()];
+            $scope.char.hp = 10 * $scope.char.con;
+            $scope.char.mp = 10 * $scope.char.min;
+            $scope.char.ep = 10 * $scope.char.end;
+            //$scope.dialog += roll();
+        };
+
+        //$scope.anything = "Water";
+        $scope.char = {
+            str: <%= @character.str %>,
+            dex: <%= @character.dex %>,
+            spd: <%= @character.spd %>,
+            con: <%= @character.con %>,
+            end: <%= @character.end %>,
+            min: <%= @character.min %>,
+            sol: <%= @character.sol %>,
+            hp: (10 * <%= @character.con %>),
+            mp: (10 * <%= @character.min %>),
+            ep: (10 * <%= @character.end %>)
+        };
+        $scope.char.str = <%= @character.str %>;
+        $scope.char.con = <%= @character.con %>;
+        $scope.char.sol = <%= @character.sol %>;
+        $scope.statsCheck = false;
+        $scope.itemCheck = false;
+        $scope.battleDone = true;
+        var battleType;
+        $scope.dialog = "";
+        $scope.enemy = {
+            wolf: {hp: 5, atk: 1, dex: 2, spd: 3},
+            turtle: {hp: 10, atk: 2, dex: 1, spd: 1},
+            elf: {hp: 5, atk: 3, dex: 3, spd: 3},
+            orc: {hp: 10, atk: 2, dex: 2, spd: 2},
+            dragon: {hp: 2000, atk: 1000, dex: 40, spd: 40},
+            demigod: {hp: 500, atk: 500, dex: 500, spd: 500}
+        };
+        $scope.enemyHp = 0;
+        var monster;
+        $scope.inn = [
+            "You approach the bar and an elf greets you. 'What do you need dear friend.' You collapse to the floor exhausted. The elf carries to a room, kisses you on the forehead, and gives you a free stay.",
+            "On the way to town you get jumped by a bunch of Gnomes... The best rest you have ever had",
+            "In this bar you collapse under exhaustion after out drinking 'Golden Beard' Dwarven drinking champion! You some how wake up three days later refreshed.",
+            "An odd temple lends you rest in exchange for your soul, what the hell why not.",
+            "You are approached by a beautiful orcish lady. She then yells 'LIGHTS OUT!' The last thing you remember was a fist hitting you face. I guess she was hitting on you.",
+            "This is a nice Inn, with a nice bed.",
+            "Oh Romeo, oh Romeo. Wherefore art thou Romeo. That's all you recall of the play, must of slept through it.",
+            "Not sure whos bed your in or who is the person sleeping next to you, but your cloths are close by... better run.",
+            "This Dwarven all female bar is hardcore everyone has a beard except for you.",
+            "You relax out in the stars.",
+            "An old friend lends you a stay at their home."
+        ]
+
+        $scope.attackWep = function () {
+            var yIni = roll() + $scope.char.spd;
+            var mIni = roll() + monster.spd;
+            if ($scope.char.hp <= 0) {
+                $scope.dialog = "You fall to the ground and pass out.";
+                $scope.battleDone = true;
+                return;
+            }
+
+            if (yIni >= mIni) {
+                if ($scope.char.ep > 0) {
+                    $scope.char.ep -= 2;
+                    $scope.yBattle = "You win the initiative. You swing with you weapon at hand.";
+                    monster.hp -= $scope.char.str;
+                    if (monster.hp > 0) {
+                        $scope.mBattle = "The enemy attacks back in kind";
+                        $scope.char.hp -= monster.atk;
+
+                        if ($scope.char.hp <= 0) {
+                            $scope.dialog = "You fall to the ground and pass out.";
+                            $scope.battleDone = true;
+                            return;
+                        }
+                    }
+                    else {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.mReward = true;
+                        }
+                        else {
+                            $scope.hReward = true;
+                        }
+                    }
+
+                }
+                else {
+                    $scope.yBattle = "You are too exhausted to attack.";
+                    if (monster.hp > 0) {
+                        $scope.mBattle = "The enemy attacks with an awesome blow!";
+                        $scope.char.hp -= monster.atk;
+
+                        if ($scope.char.hp <= 0) {
+                            $scope.dialog = "You fall to the ground and pass out.";
+                            $scope.battleDone = true;
+                            return;
+                        }
+                    }
+                    else {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.mReward = true;
+                        }
+                        else {
+                            $scope.hReward = true;
+                        }
+                    }
+                }
+
+            }
+            else {
+                $scope.yBattle = "The enemy strikes first and lands a painful blow!"
+                $scope.char.hp -= monster.atk;
+                if ($scope.char.hp <= 0) {
+                    $scope.dialog = "You fall to the ground and pass out.";
+                    $scope.battleDone = true;
+                    return;
+                }
+                if($scope.char.ep > 0){
+                    $scope.char.ep -= 2;
+                    $scope.mBattle = "You swing in retaliation!";
+                    monster.hp -= $scope.char.str;
+                    if (monster.hp <= 0) {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.mReward = true;
+                        }
+                        else {
+                            $scope.hReward = true;
+                        }
+                    }
+                }
+
+
+            }
+            $scope.enemyHp = monster.hp;
+        };
+        $scope.attackMag = function () {
+            var yIni = roll() + $scope.char.spd;
+            var mIni = roll() + monster.spd;
+            if ($scope.char.hp <= 0) {
+                $scope.dialog = "You fall to the ground and pass out.";
+                $scope.battleDone = true;
+                return;
+            }
+
+            if (yIni >= mIni) {
+                if ($scope.char.mp > 0) {
+                    $scope.char.mp -= 2;
+                    $scope.yBattle = "You win the initiative. Fire blazes from you hands.";
+                    monster.hp -= $scope.char.sol;
+                    if (monster.hp > 0) {
+                        $scope.mBattle = "The enemy attacks back in kind";
+                        $scope.char.hp -= monster.atk;
+
+                        if ($scope.char.hp <= 0) {
+                            $scope.dialog = "You fall to the ground and pass out.";
+                            $scope.battleDone = true;
+                            return;
+                        }
+                    }
+                    else {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.eReward = true;
+                        }
+                        else {
+                            $scope.eReward = true;
+                        }
+                    }
+
+                }
+                else {
+                    $scope.yBattle = "You are too exhausted to attack.";
+                    if (monster.hp > 0) {
+                        $scope.mBattle = "The enemy attacks with an awesome blow!";
+                        $scope.char.hp -= monster.atk;
+
+                        if ($scope.char.hp <= 0) {
+                            $scope.dialog = "You fall to the ground and pass out.";
+                            $scope.battleDone = true;
+                            return;
+                        }
+                    }
+                    else {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.mReward = true;
+                        }
+                        else {
+                            $scope.hReward = true;
+                        }
+                    }
+                }
+
+            }
+            else {
+                $scope.yBattle = "The enemy strikes first and lands a painful blow!"
+                $scope.char.hp -= monster.atk;
+                if ($scope.char.hp <= 0) {
+                    $scope.dialog = "You fall to the ground and pass out.";
+                    $scope.battleDone = true;
+                    return;
+                }
+                if($scope.char.mp > 0){
+                    $scope.char.mp -= 2;
+                    $scope.mBattle = "You counter with a spell of your own.";
+                    monster.hp -= $scope.char.sol;
+                    if (monster.hp <= 0) {
+                        $scope.dialog = "You fell the beast! Claim you reward!";
+                        $scope.battleDone = true;
+                        if (battleType == "easy") {
+                            $scope.eReward = true;
+                        }
+                        else if (battleType == "med") {
+                            $scope.eReward = true;
+                        }
+                        else {
+                            $scope.eReward = true;
+                        }
+                    }
+                }
+
+
+            }
+            $scope.enemyHp = monster.hp;
+        };
+        $scope.retreat = function () {
+            var yIni = roll() + $scope.char.spd;
+            var mIni = roll() + monster.spd;
+            if(yIni >= mIni){
+                $scope.dialog = "You have escaped successfully";
+                $scope.battleDone = true
+            }
+            else{
+                $scope.yBattle = "The enemy cuts of your retreat";
+                $scope.mBattle = "It attacks viciously";
+                $scope.char.hp -= monster.atk;
+            }
+        };
+
+        $scope.eReward = false;
+        $scope.mReward = false;
+        $scope.hReward = false;
+
+        function randInn() {
+            return Math.floor((Math.random() * 10));
+        };
+        function roll() {
+            return Math.floor((Math.random() * 10) + 1);
+        };
+    }]);
+
+
+</script>
+<br>
+
+<div ng-if="eReward">
+  <%= link_to('Get Loot', new_character_item_path(@character.id), :class => 'btn btn-default') %>
+</div>
+
+<br>
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+            characters_path, :class => 'btn btn-default' %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_character_path(@character), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+            character_path(@character),
+            :method => 'delete',
+            :data => {:confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?'))},
+            :class => 'btn btn-danger' %>
+</div>

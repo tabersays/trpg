@@ -1,0 +1,12 @@
+<%- model_class = Character -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => [:'helpers.titles.new', 'New %{model}'], :model => model_class.model_name.human.titleize %></h1>
+</div>
+<br>
+<strong><p>Please set your stats. You total must add up to 20 points and you must have at least a value of 1 in each stat.</p></strong>
+<br>
+<p><%= @myMessage if @myMessage%></p>
+<p><%= @error if @error %> </p>
+<br>
+
+<%= render :partial => 'form' %>

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  type: 
+  att: 1
+  def: 1
+  worth: 1
+  character_id: 
+
+two:
+  name: MyString
+  type: 
+  att: 1
+  def: 1
+  worth: 1
+  character_id: 

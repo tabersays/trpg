@@ -1,0 +1,45 @@
+<%= form_for([@character, @item], :html => { :class => "form-horizontal character" }) do |f| %>
+    <% if @item.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+          <ul>
+            <% @item.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :name %><br>
+      <p>Sword</p>
+      <%= hidden_field_tag :name, 'Sword' %>
+    </div>
+    <div class="field">
+      <%= f.label :kind %><br>
+      <p>Weapon</p>
+      <%= hidden_field_tag :kind, 'Weapon' %>
+    </div>
+    <div class="field">
+      <%= f.label :att %><br>
+      <p>3</p>
+      <%= hidden_field_tag :att, '3' %>
+    </div>
+    <div class="field">
+      <%= f.label :def %><br>
+      <p>0</p>
+      <%= hidden_field_tag :def, '0' %>
+    </div>
+    <div class="field">
+      <%= f.label :worth %><br>
+      <p>5</p>
+      <%= hidden_field_tag :worth, '5' %>
+    </div>
+    <div class="field">
+      <%= hidden_field_tag :character_id,  @character.id %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+<% end %>

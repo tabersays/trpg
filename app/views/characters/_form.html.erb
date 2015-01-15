@@ -1,0 +1,89 @@
+<%= form_for @character, :html => { :class => "form-horizontal character" } do |f| %>
+
+    <% if @character.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@character.errors.count, "error") %> prohibited this character from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @character.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :name, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:name]) %>
+  </div>
+<% if @edit == false  %>
+  <div class="control-group">
+    <%= f.label :str, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :str, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:str]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :dex, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :dex, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:dex]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :spd, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :spd, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:spd]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :con, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :con, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:con]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :end, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :end, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:end]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :min, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :min, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:min]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :sol, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :sol, :class => 'form-control' %>
+    </div>
+    <%= error_span(@character[:sol]) %>
+  </div>
+
+  <% end %>
+</div>
+  <div class="control-group">
+    <strong><p>Please choose an avatar for you character. If left blank a default image will be used </p></strong>
+    <div class="controls">
+      <%= f.file_field :uploaded_file, :class => 'btn-default'%>
+    </div>
+  </div>
+<br>
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            characters_path, :class => 'btn btn-default' %>
+
+<% end %>
